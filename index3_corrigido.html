@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oficina da Escrita | Aprender é divertido!</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --purple:#7656d6;
+    --purple-dark:#563bb0;
+    --purple-light:#eee9ff;
+    --pink:#ffe1ed;
+    --blue:#e0f2ff;
+    --yellow:#fff1c9;
+    --green:#def8e9;
+    --background:#f7f7fc;
+    --white:#fff;
+    --text:#34324b;
+    --muted:#89879c;
+    --shadow:0 8px 28px rgba(65,52,110,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:var(--background);color:var(--text)}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #b7a5ff;outline-offset:3px}
+.app{display:flex;min-height:100vh}
+
+/* MENU */
+.sidebar{
+ width:255px;background:white;border-right:1px solid #eee;
+ padding:25px 18px;display:flex;flex-direction:column;
+ position:fixed;height:100vh;z-index:20;transition:.35s;
+}
+.logo{display:flex;align-items:center;gap:11px;padding:0 10px;margin-bottom:35px}
+.logo-icon{width:46px;height:46px;background:var(--purple-light);border-radius:15px;display:grid;place-items:center;font-size:25px}
+.logo h2{font-size:17px;font-weight:900}
+.logo small{color:var(--muted);font-size:11px;font-weight:700}
+.menu-label{font-size:10px;color:#aaa;font-weight:900;letter-spacing:1.4px;padding:0 12px;margin-bottom:12px}
+.menu{display:flex;flex-direction:column;gap:6px}
+.menu button{
+ display:flex;align-items:center;gap:13px;background:transparent;
+ color:#77758b;padding:12px 14px;border-radius:13px;text-align:left;
+ font-size:14px;font-weight:800;transition:.25s;
+}
+.menu button:hover{background:#f8f6ff;color:var(--purple);transform:translateX(4px)}
+.menu button.active{background:var(--purple-light);color:var(--purple)}
+.menu-icon{font-size:19px;width:22px;text-align:center}
+.sidebar-bottom{margin-top:auto;background:#faf8ff;padding:16px;border-radius:17px}
+.sidebar-bottom p{font-size:12px;font-weight:900}
+.sidebar-bottom small{color:var(--muted);font-size:11px}
+
+/* CONTEÚDO */
+.main{margin-left:255px;width:calc(100% - 255px);max-width:1600px;padding:27px 42px 60px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;gap:10px}
+.breadcrumb{color:var(--muted);font-size:13px;font-weight:800}
+.profile-button{display:flex;align-items:center;gap:10px;background:white;padding:7px 13px 7px 7px;border-radius:30px;box-shadow:var(--shadow);color:var(--text);font-weight:900}
+.profile-avatar{width:38px;height:38px;background:var(--yellow);display:grid;place-items:center;border-radius:50%;font-size:22px}
+.page{display:none;animation:pageIn .45s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+/* ANIMAÇÕES */
+@keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-13px) rotate(5deg)}}
+@keyframes sparkle{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}80%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+@keyframes shine{0%{background-position:-200%}100%{background-position:200%}}
+.welcome-art{animation:float 4s ease-in-out infinite}
+.card:hover .card-icon{animation:wiggle .5s ease}
+.primary-button:hover{transform:translateY(-3px) scale(1.02)}
+.primary-button:active{transform:scale(.97)}
+
+/* BOAS-VINDAS */
+.welcome{
+ background:linear-gradient(115deg,#7359c9,#a18bed);
+ border-radius:25px;padding:35px;color:white;
+ display:flex;justify-content:space-between;align-items:center;
+ overflow:hidden;position:relative;min-height:210px;
+ box-shadow:0 12px 30px rgba(112,85,199,.2);
+}
+.welcome:after{content:"✦";position:absolute;font-size:190px;right:30%;top:-70px;color:#ffffff15;animation:sparkle 4s infinite}
+.welcome-text{position:relative;z-index:1}
+.welcome small{font-size:12px;font-weight:900;opacity:.85}
+.welcome h1{font-size:clamp(25px,3vw,36px);font-weight:900;margin:8px 0}
+.welcome p{font-size:14px;opacity:.9}
+.welcome-art{font-size:95px;position:relative;z-index:1}
+
+/* ESTATÍSTICAS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.stat-card{background:white;padding:18px;border-radius:18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;transition:.3s}
+.stat-card:hover{transform:translateY(-4px)}
+.stat-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;font-size:23px}
+.stat-card strong{font-size:23px;font-weight:900}
+.stat-card small{display:block;color:var(--muted);font-size:11px;font-weight:800}
+.section-heading{display:flex;justify-content:space-between;align-items:center;margin:32px 0 17px}
+.section-heading h2{font-size:20px;font-weight:900}
+.section-heading p{color:var(--muted);font-size:12px}
+
+/* CARTÕES */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.card{background:white;border:1px solid #eee;border-radius:20px;padding:21px;box-shadow:var(--shadow);transition:.3s;cursor:pointer;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-7px);box-shadow:0 15px 35px #44346d20}
+.card-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;font-size:27px;margin-bottom:15px}
+.card h3{font-size:16px;font-weight:900;margin-bottom:6px}
+.card p{font-size:12px;line-height:1.7;color:var(--muted)}
+.card-link{display:inline-block;margin-top:14px;color:var(--purple);font-size:12px;font-weight:900}
+.page-header{margin-bottom:25px}
+.page-header h1{font-size:28px;font-weight:900}
+.page-header p{color:var(--muted);font-size:14px;margin-top:5px}
+.content-box{background:white;border-radius:20px;padding:25px;box-shadow:var(--shadow);margin-bottom:18px}
+.content-box h2{font-size:19px;margin-bottom:12px}
+.content-box p{color:#747287;line-height:1.8;font-size:14px;margin:5px 0}
+.primary-button{background:var(--purple);color:white;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:900;margin-top:15px;transition:.25s}
+.primary-button:hover{background:var(--purple-dark)}
+.secondary-button{background:var(--purple-light);color:var(--purple);padding:11px 17px;border-radius:12px;font-weight:900;margin:5px}
+textarea{width:100%;min-height:220px;padding:17px;border:1px solid #e9e7f2;border-radius:14px;resize:vertical;outline:none;font-size:14px;line-height:1.7;color:var(--text);background:#fdfcff}
+input[type=text],select{width:100%;padding:13px;border:1px solid #e9e7f2;border-radius:12px;outline:none;margin-top:8px;background:white;color:var(--text)}
+textarea:focus,input:focus,select:focus{border-color:var(--purple)}
+.editor-info{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;margin-top:10px}
+
+/* PROGRESSO */
+.progress-track{height:12px;background:#efedf6;border-radius:20px;overflow:hidden;margin-top:12px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#8065d5,#b49af6);border-radius:20px;width:0%;transition:width .7s}
+
+/* ATIVIDADES */
+.question{background:#faf9ff;border:1px solid #eee;padding:20px;border-radius:16px;margin-top:15px}
+.question h3{font-size:15px;margin-bottom:13px}
+.answer{display:block;width:100%;text-align:left;background:white;border:1px solid #e9e7f2;padding:12px 14px;border-radius:11px;margin-top:8px;color:var(--text);font-size:13px;font-weight:800;transition:.2s}
+.answer:hover:not(:disabled){border-color:var(--purple);background:#f8f5ff;transform:translateX(4px)}
+.answer:disabled{cursor:default;opacity:.9}
+.feedback{font-size:13px;font-weight:900;margin-top:12px;min-height:20px}
+.correct{background:#e9fff1!important;border-color:#55bd8c!important}
+.wrong{background:#fff0f0!important;border-color:#e99!important}
+
+/* MUNDO DAS PALAVRAS */
+.word-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.word-card{background:#faf9ff;border:1px solid #eee;border-radius:17px;padding:18px;transition:.3s}
+.word-card:hover{transform:translateY(-5px) rotate(-1deg);background:#f4efff}
+.word-card .emoji{font-size:30px}
+.word-card h3{font-size:17px;color:var(--purple);margin:8px 0}
+.word-card p{font-size:12px;line-height:1.6;color:var(--muted)}
+.word-card small{display:block;margin-top:8px;color:#5b9b78;font-weight:900}
+.search-box{display:flex;gap:10px;align-items:center}
+.search-box input{flex:1}
+.category-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.category-buttons button{padding:9px 15px;border-radius:30px;background:#f1eff8;color:#6e6688;font-size:12px;font-weight:900}
+.category-buttons button.active{background:var(--purple);color:white}
+
+/* JOGOS */
+.game-box{background:linear-gradient(135deg,#f6f1ff,#fff8fb);padding:24px;border-radius:20px;margin-top:15px;border:1px solid #eee}
+.game-word{font-size:34px;letter-spacing:5px;text-align:center;font-weight:900;color:var(--purple);padding:20px}
+.game-options{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:15px}
+.game-options button{background:white;border:2px solid #e9e4f5;padding:13px 22px;border-radius:13px;font-weight:900;color:var(--text);transition:.2s}
+.game-options button:hover{border-color:var(--purple);transform:scale(1.05)}
+.game-feedback{text-align:center;font-weight:900;margin-top:15px;min-height:24px}
+.challenge-card{border-left:5px solid var(--purple);background:#faf8ff;padding:19px;border-radius:13px;margin:13px 0}
+.challenge-card h3{margin-bottom:7px}
+
+/* PERFIL */
+.profile-panel{display:flex;align-items:center;gap:20px}
+.big-avatar{width:85px;height:85px;border-radius:24px;background:var(--purple-light);display:grid;place-items:center;font-size:45px}
+.avatar-options{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0}
+.avatar-option{width:53px;height:53px;font-size:27px;border-radius:15px;background:#f7f5ff;border:2px solid transparent}
+.avatar-option.selected{border-color:var(--purple);background:var(--purple-light);animation:pop .3s}
+.mobile-menu{display:none;background:white;border-radius:10px;padding:9px 12px;font-size:20px;box-shadow:var(--shadow)}
+.overlay{display:none}
+.toast{position:fixed;bottom:25px;right:25px;background:#332b50;color:white;padding:14px 20px;border-radius:13px;box-shadow:var(--shadow);z-index:99;animation:pop .3s}
+.hidden{display:none!important}
+
+@media(max-width:1000px){
+ .main{padding:25px}
+ .cards{grid-template-columns:repeat(2,1fr)}
+ .word-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+ .sidebar{transform:translateX(-100%)}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin-left:0;width:100%;padding:18px}
+ .mobile-menu{display:block}
+ .topbar{gap:10px}
+ .welcome{padding:25px}
+ .welcome-art{font-size:60px}
+ .stats{grid-template-columns:1fr}
+ .cards,.word-grid{grid-template-columns:1fr}
+ .overlay.show{display:block;position:fixed;inset:0;background:#140f4059;z-index:15}
+ .page-header h1{font-size:24px}
+ .search-box{flex-direction:column;align-items:stretch}
+ .profile-button{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+ <div class="logo">
+  <div class="logo-icon">📚</div>
+  <div><h2>Oficina da Escrita</h2><small>Aprender é divertido!</small></div>
+ </div>
+ <div class="menu-label">MENU PRINCIPAL</div>
+ <nav class="menu">
+  <button class="active" onclick="showPage('home',this)">🏠 Início</button>
+  <button onclick="showPage('leitura',this)">📖 Cantinho da leitura</button>
+  <button onclick="showPage('redacao',this)">✍️ Minha redação</button>
+  <button onclick="showPage('atividades',this)">🧩 Atividades</button>
+  <button onclick="showPage('palavras',this)">🔤 Mundo das palavras</button>
+  <button onclick="showPage('jogos',this)">🎮 Jogos educativos</button>
+  <button onclick="showPage('desafios',this)">🏆 Desafios</button>
+  <button onclick="showPage('perfil',this)">👤 Meu perfil</button>
+ </nav>
+ <div class="sidebar-bottom">
+  <p>🌟 Continue aprendendo!</p>
+  <small>Cada palavra é uma nova descoberta.</small>
+ </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:12px">
+  <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+  <span class="breadcrumb">Oficina da Escrita / <span id="breadcrumb">Início</span></span>
+ </div>
+ <button class="profile-button" onclick="showPage('perfil')">
+  <span class="profile-avatar" id="topAvatar">🦊</span>
+  <span id="topName">Aluno</span>
+ </button>
+</header>
+
+<!-- INÍCIO -->
+<section class="page active" id="home">
+ <div class="welcome">
+  <div class="welcome-text">
+   <small>SEJA BEM-VINDO(A) À SUA OFICINA!</small>
+   <h1>Olá, <span id="welcomeName">pequeno escritor</span>! 👋</h1>
+   <p>Prepare sua criatividade. Hoje é dia de aprender coisas novas!</p>
+  </div>
+  <div class="welcome-art">🎒</div>
+ </div>
+
+ <div class="stats">
+  <div class="stat-card"><div class="stat-icon" style="background:var(--purple-light)">⭐</div><div><strong id="points">0</strong><small>Pontos conquistados</small></div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:var(--green)">✅</div><div><strong id="completed">0</strong><small>Atividades concluídas</small></div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:var(--yellow)">📚</div><div><strong id="wordsCount">0</strong><small>Palavras na redação</small></div></div>
+ </div>
+
+ <div class="section-heading"><div><h2>O que vamos aprender hoje?</h2><p>Escolha uma aventura para começar!</p></div></div>
+ <div class="cards">
+  <div class="card" onclick="showPage('leitura')"><div class="card-icon" style="background:var(--blue)">📖</div><h3>Cantinho da leitura</h3><p>Descubra histórias, personagens e novos mundos.</p><span class="card-link">Explorar leitura →</span></div>
+  <div class="card" onclick="showPage('redacao')"><div class="card-icon" style="background:var(--pink)">✍️</div><h3>Minha redação</h3><p>Use sua imaginação e coloque suas ideias no papel.</p><span class="card-link">Começar a escrever →</span></div>
+  <div class="card" onclick="showPage('atividades')"><div class="card-icon" style="background:var(--yellow)">🧩</div><h3>Atividades</h3><p>Aprenda brincando com exercícios interativos.</p><span class="card-link">Fazer atividades →</span></div>
+  <div class="card" onclick="showPage('palavras')"><div class="card-icon" style="background:var(--green)">🔤</div><h3>Mundo das palavras</h3><p>Conheça palavras, significados e expressões.</p><span class="card-link">Descobrir palavras →</span></div>
+  <div class="card" onclick="showPage('jogos')"><div class="card-icon" style="background:#ffe9d7">🎮</div><h3>Jogos educativos</h3><p>Brinque com letras, palavras e frases.</p><span class="card-link">Jogar agora →</span></div>
+  <div class="card" onclick="showPage('desafios')"><div class="card-icon" style="background:#e8edff">🏆</div><h3>Desafios</h3><p>Teste sua criatividade e conquiste pontos.</p><span class="card-link">Aceitar desafio →</span></div>
+ </div>
+
+ <div class="content-box" style="margin-top:25px">
+  <h2>🌈 Seu progresso</h2>
+  <p>Continue explorando a oficina e acompanhe suas conquistas!</p>
+  <div class="progress-track"><div class="progress-fill" id="homeProgress"></div></div>
+  <p id="progressText" style="margin-top:8px;font-size:12px">Você está começando!</p>
+ </div>
+</section>
+
+<!-- LEITURA -->
+<section class="page" id="leitura">
+ <div class="page-header"><h1>📖 Cantinho da leitura</h1><p>Uma boa história pode despertar grandes ideias.</p></div>
+ <div class="content-box">
+  <h2>O lápis que queria viajar ✏️</h2>
+  <p>Em uma pequena sala de aula, havia um lápis que sonhava em conhecer o mundo. Todos os dias, ele observava os alunos escrevendo histórias, fazendo desenhos e descobrindo coisas novas.</p>
+  <p>Certo dia, uma menina pegou o lápis e começou a escrever uma aventura. Naquela folha, ele conheceu castelos, florestas, animais e personagens incríveis.</p>
+  <p>O lápis percebeu que, mesmo sem sair da sala, poderia viajar para muitos lugares por meio da imaginação.</p>
+ </div>
+ <div class="content-box">
+  <h2>💭 Vamos pensar?</h2>
+  <div class="question"><h3>1. Qual era o sonho do lápis?</h3>
+   <button class="answer" onclick="readingAnswer(this,false)">Aprender a desenhar.</button>
+   <button class="answer" onclick="readingAnswer(this,true)">Conhecer o mundo.</button>
+   <button class="answer" onclick="readingAnswer(this,false)">Virar uma borracha.</button>
+   <div class="feedback"></div>
+  </div>
+  <div class="question"><h3>2. Como ele conheceu lugares diferentes?</h3>
+   <button class="answer" onclick="readingAnswer(this,false)">Pegou um avião.</button>
+   <button class="answer" onclick="readingAnswer(this,true)">Por meio da imaginação e da história.</button>
+   <button class="answer" onclick="readingAnswer(this,false)">Saiu correndo da sala.</button>
+   <div class="feedback"></div>
+  </div>
+  <h3 style="margin-top:20px">3. Se você escrevesse uma aventura, sobre o que ela seria?</h3>
+  <textarea id="readingAnswerText" placeholder="Escreva sua ideia aqui..."></textarea>
+  <button class="primary-button" onclick="toast('Sua ideia ficou registrada nesta atividade! ✨')">Finalizar reflexão</button>
+ </div>
+</section>
+
+<!-- REDAÇÃO -->
+<section class="page" id="redacao">
+ <div class="page-header"><h1>✍️ Minha redação</h1><p>Suas ideias merecem ganhar vida através das palavras!</p></div>
+ <div class="content-box">
+  <h2>📝 Hora de escrever!</h2>
+  <p>Escolha um tema e desenvolva suas próprias ideias.</p>
+  <label for="essayTitle" style="display:block;margin-top:18px;font-weight:900">Tema da redação</label>
+  <input type="text" id="essayTitle" placeholder="Ex.: Um dia inesquecível...">
+  <label for="essay" style="display:block;margin:18px 0 8px;font-weight:900">Seu texto</label>
+  <textarea id="essay" placeholder="Era uma vez... Comece a escrever sua história aqui!"></textarea>
+  <div class="editor-info"><span id="wordCounter">0 palavras</span><span id="saveStatus">Salvo automaticamente</span></div>
+  <button class="primary-button" onclick="saveEssay()">💾 Salvar redação</button>
+  <button class="secondary-button" onclick="clearEssay()">🗑️ Limpar texto</button>
+ </div>
+ <div class="content-box">
+  <h2>💡 Dicas para escrever melhor</h2>
+  <p>🌱 Organize suas ideias antes de começar.</p>
+  <p>📌 Pense em como deseja iniciar sua história.</p>
+  <p>📝 Desenvolva suas ideias com detalhes.</p>
+  <p>🔎 Revise o texto para encontrar possíveis erros.</p>
+ </div>
+</section>
+
+<!-- ATIVIDADES -->
+<section class="page" id="atividades">
+ <div class="page-header"><h1>🧩 Atividades interativas</h1><p>Responda, aprenda e acumule pontos!</p></div>
+ <div class="content-box">
+  <h2>Desafio de português</h2>
+  <p>Cada resposta correta vale 10 pontos. Escolha com atenção!</p>
+  <div id="quizContainer"></div>
+ </div>
+ <div class="content-box">
+  <h2>🏆 Suas conquistas</h2>
+  <p id="quizScore">Você ainda não respondeu às perguntas.</p>
+  <div class="progress-track"><div class="progress-fill" id="activityProgress"></div></div>
+ </div>
+</section>
+
+<!-- MUNDO DAS PALAVRAS -->
+<section class="page" id="palavras">
+ <div class="page-header"><h1>🔤 Mundo das palavras</h1><p>Um universo de descobertas espera por você!</p></div>
+ <div class="content-box">
+  <h2>🔎 Encontre uma palavra</h2>
+  <div class="search-box"><input id="wordSearch" type="text" placeholder="Digite uma palavra para pesquisar..." oninput="renderWords()"></div>
+  <div class="category-buttons">
+   <button class="active" onclick="setCategory('todas',this)">Todas</button>
+   <button onclick="setCategory('natureza',this)">🌳 Natureza</button>
+   <button onclick="setCategory('sentimentos',this)">💜 Sentimentos</button>
+   <button onclick="setCategory('criatividade',this)">💡 Criatividade</button>
+   <button onclick="setCategory('escola',this)">📚 Escola</button>
+  </div>
+  <div class="word-grid" id="wordGrid"></div>
+ </div>
+ <div class="content-box">
+  <h2>✨ Palavra surpresa</h2>
+  <div class="game-box">
+   <div class="game-word" id="randomWord">CRIATIVIDADE</div>
+   <p id="randomMeaning" style="text-align:center">Capacidade de imaginar e criar coisas novas.</p>
+   <div style="text-align:center"><button class="primary-button" onclick="surpriseWord()">Descobrir outra palavra 🎲</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- JOGOS -->
+<section class="page" id="jogos">
+ <div class="page-header"><h1>🎮 Jogos educativos</h1><p>Aprender brincando é muito mais divertido!</p></div>
+
+ <div class="content-box">
+  <h2>🔠 Jogo 1 — Complete a palavra</h2>
+  <p>Escolha a letra que está faltando.</p>
+  <div class="game-box">
+   <div class="game-word" id="missingWord">CA_A</div>
+   <div class="game-options" id="letterOptions"></div>
+   <div class="game-feedback" id="letterFeedback"></div>
+   <div style="text-align:center"><button class="primary-button" onclick="newLetterGame()">Próxima palavra ↗</button></div>
+  </div>
+ </div>
+
+ <div class="content-box">
+  <h2>🧩 Jogo 2 — Forme a frase</h2>
+  <p>Qual é a melhor ordem para formar uma frase?</p>
+  <div class="game-box">
+   <div class="game-word" style="font-size:24px;letter-spacing:1px" id="sentenceWords">gosta • menina • A • de • ler</div>
+   <div class="game-options" id="sentenceOptions"></div>
+   <div class="game-feedback" id="sentenceFeedback"></div>
+   <div style="text-align:center"><button class="primary-button" onclick="checkSentence()">Conferir frase ✓</button><button class="secondary-button" onclick="newSentence()">Nova frase</button></div>
+  </div>
+ </div>
+
+ <div class="content-box">
+  <h2>🎯 Jogo 3 — Qual palavra combina?</h2>
+  <p>Escolha um sinônimo para a palavra apresentada.</p>
+  <div class="game-box">
+   <div class="game-word" id="synonymWord">ALEGRE</div>
+   <div class="game-options" id="synonymOptions"></div>
+   <div class="game-feedback" id="synonymFeedback"></div>
+   <div style="text-align:center"><button class="primary-button" onclick="newSynonym()">Próxima rodada</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- DESAFIOS -->
+<section class="page" id="desafios">
+ <div class="page-header"><h1>🏆 Desafios da criatividade</h1><p>Use sua imaginação e mostre o que você consegue criar!</p></div>
+ <div class="content-box">
+  <div class="challenge-card"><h3>🌟 Desafio 1 — A porta misteriosa</h3><p>Imagine que você encontrou uma porta misteriosa na sua escola. O que havia do outro lado?</p><button class="primary-button" onclick="startChallenge('Imagine que você encontrou uma porta misteriosa na sua escola. O que havia do outro lado?')">Aceitar desafio</button></div>
+  <div class="challenge-card"><h3>🎨 Desafio 2 — Objeto falante</h3><p>Escolha um objeto perto de você e imagine que ele começou a conversar. O que ele diria?</p><button class="primary-button" onclick="startChallenge('Escolha um objeto perto de você e imagine que ele começou a conversar. O que ele diria?')">Aceitar desafio</button></div>
+  <div class="challenge-card"><h3>🌈 Desafio 3 — Um mundo diferente</h3><p>Crie um lugar onde os animais podem falar e as árvores contam histórias.</p><button class="primary-button" onclick="startChallenge('Crie um lugar onde os animais podem falar e as árvores contam histórias.')">Aceitar desafio</button></div>
+  <div class="challenge-card"><h3>🚀 Desafio 4 — Viagem espacial</h3><p>Imagine que você viajou para outro planeta. Conte o que encontrou por lá.</p><button class="primary-button" onclick="startChallenge('Imagine que você viajou para outro planeta. Conte o que encontrou por lá.')">Aceitar desafio</button></div>
+ </div>
+</section>
+
+<!-- PERFIL -->
+<section class="page" id="perfil">
+ <div class="page-header"><h1>👤 Meu perfil</h1><p>Seu cantinho especial dentro da Oficina da Escrita!</p></div>
+ <div class="content-box">
+  <div class="profile-panel">
+   <div class="big-avatar" id="bigAvatar">🦊</div>
+   <div><h2 id="profileName">Meu perfil</h2><p>Pequeno escritor da Oficina da Escrita.</p></div>
+  </div>
+  <hr style="border:0;border-top:1px solid #eee;margin:23px 0">
+  <h2>Como você quer ser chamado?</h2>
+  <input type="text" id="nameInput" maxlength="24" placeholder="Digite seu nome">
+  <h2 style="margin-top:22px">Escolha seu avatar</h2>
+  <p>Selecione o personagem que vai representar você!</p>
+  <div class="avatar-options" id="avatarOptions">
+   <button class="avatar-option selected" onclick="selectAvatar('🦊',this)">🦊</button>
+   <button class="avatar-option" onclick="selectAvatar('🐼',this)">🐼</button>
+   <button class="avatar-option" onclick="selectAvatar('🐱',this)">🐱</button>
+   <button class="avatar-option" onclick="selectAvatar('🐸',this)">🐸</button>
+   <button class="avatar-option" onclick="selectAvatar('🦁',this)">🦁</button>
+   <button class="avatar-option" onclick="selectAvatar('🐰',this)">🐰</button>
+   <button class="avatar-option" onclick="selectAvatar('🐻',this)">🐻</button>
+   <button class="avatar-option" onclick="selectAvatar('🐯',this)">🐯</button>
+   <button class="avatar-option" onclick="selectAvatar('🐨',this)">🐨</button>
+   <button class="avatar-option" onclick="selectAvatar('🐧',this)">🐧</button>
+  </div>
+  <button class="primary-button" onclick="saveProfile()">Salvar meu perfil ✨</button>
+  <p id="profileMessage" style="margin-top:12px;font-weight:900;color:var(--purple)"></p>
+ </div>
+ <div class="content-box"><h2>⭐ Minhas conquistas</h2><p id="profileStats">Você está começando sua jornada!</p></div>
+</section>
+
+</main>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+// DADOS E SALVAMENTO
+const getData=(key,fallback)=>{
+ try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}
+};
+let student=getData('oficina_perfil',{name:'',avatar:'🦊'});
+let points=Number(localStorage.getItem('oficina_pontos'))||0;
+let completed=getData('oficina_concluidas',[]);
+let selectedAvatar=student.avatar||'🦊';
+let currentCategory='todas';
+
+function saveData(){
+ localStorage.setItem('oficina_pontos',points);
+ localStorage.setItem('oficina_concluidas',JSON.stringify(completed));
+}
+function toast(message){
+ const el=document.getElementById('toast');
+ el.textContent=message;
+ el.classList.remove('hidden');
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>el.classList.add('hidden'),2600);
+}
+
+// NAVEGAÇÃO
+const labels={home:'Início',leitura:'Cantinho da leitura',redacao:'Minha redação',atividades:'Atividades',palavras:'Mundo das palavras',jogos:'Jogos educativos',desafios:'Desafios',perfil:'Meu perfil'};
+function showPage(id,button){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ const target=document.getElementById(id);
+ if(!target)return;
+ target.classList.add('active');
+ document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+ if(button)button.classList.add('active');
+ else{
+  const found=[...document.querySelectorAll('.menu button')].find(b=>b.getAttribute('onclick')?.includes("'"+id+"'"));
+  if(found)found.classList.add('active');
+ }
+ document.getElementById('breadcrumb').textContent=labels[id];
+ document.getElementById('sidebar').classList.remove('open');
+ document.getElementById('overlay').classList.remove('show');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleMenu(){
+ document.getElementById('sidebar').classList.toggle('open');
+ document.getElementById('overlay').classList.toggle('show');
+}
+
+// PERFIL
+function selectAvatar(avatar,button){
+ selectedAvatar=avatar;
+ document.querySelectorAll('.avatar-option').forEach(b=>b.classList.remove('selected'));
+ button.classList.add('selected');
+ document.getElementById('bigAvatar').textContent=avatar;
+}
+function saveProfile(){
+ const name=document.getElementById('nameInput').value.trim();
+ if(!name){document.getElementById('profileMessage').textContent='Digite seu nome primeiro! 😊';return}
+ student={name,avatar:selectedAvatar};
+ localStorage.setItem('oficina_perfil',JSON.stringify(student));
+ updateProfile();
+ document.getElementById('profileMessage').textContent='Perfil salvo com sucesso! 🎉';
+ toast('Seu perfil foi atualizado!');
+}
+function updateProfile(){
+ const name=student.name||'pequeno escritor';
+ document.getElementById('welcomeName').textContent=name;
+ document.getElementById('topName').textContent=student.name||'Aluno';
+ document.getElementById('topAvatar').textContent=student.avatar;
+ document.getElementById('bigAvatar').textContent=student.avatar;
+ document.getElementById('profileName').textContent=student.name||'Meu perfil';
+ document.getElementById('nameInput').value=student.name||'';
+ document.querySelectorAll('.avatar-option').forEach(b=>b.classList.toggle('selected',b.textContent===student.avatar));
+}
+
+// REDAÇÃO
+const essay=document.getElementById('essay');
+const essayTitle=document.getElementById('essayTitle');
+essay.value=localStorage.getItem('oficina_redacao')||'';
+essayTitle.value=localStorage.getItem('oficina_titulo')||'';
+function countWords(){
+ const text=essay.value.trim();
+ const count=text?text.split(/\s+/).length:0;
+ document.getElementById('wordCounter').textContent=count+' '+(count===1?'palavra':'palavras');
+ document.getElementById('wordsCount').textContent=count;
+}
+function saveEssay(){
+ localStorage.setItem('oficina_redacao',essay.value);
+ localStorage.setItem('oficina_titulo',essayTitle.value);
+ document.getElementById('saveStatus').textContent='Redação salva! ✓';
+ countWords();toast('Sua redação foi salva! ✍️');
+}
+function clearEssay(){
+ if(!confirm('Tem certeza de que deseja apagar sua redação?'))return;
+ essay.value='';essayTitle.value='';
+ localStorage.removeItem('oficina_redacao');
+ localStorage.removeItem('oficina_titulo');
+ countWords();toast('Texto apagado.');
+}
+essay.addEventListener('input',()=>{
+ localStorage.setItem('oficina_redacao',essay.value);
+ document.getElementById('saveStatus').textContent='Salvando automaticamente...';
+ countWords();
+});
+essayTitle.addEventListener('input',()=>localStorage.setItem('oficina_titulo',essayTitle.value));
+
+// SISTEMA DE PONTOS
+function earnPoints(amount,message){
+ points+=amount;saveData();updateProgress();toast(message||'+'+amount+' pontos! ⭐');
+}
+function finishActivity(id,amount=10){
+ if(completed.includes(id))return false;
+ completed.push(id);points+=amount;saveData();updateProgress();return true;
+}
+function updateProgress(){
+ document.getElementById('points').textContent=points;
+ document.getElementById('completed').textContent=completed.length;
+ const percent=Math.min(completed.length/15*100,100);
+ document.getElementById('homeProgress').style.width=percent+'%';
+ document.getElementById('activityProgress').style.width=Math.min(quizDone.length/quiz.length*100,100)+'%';
+ document.getElementById('progressText').textContent=completed.length?`Você já concluiu ${completed.length} atividades. Continue assim!`:'Você está começando sua jornada!';
+ document.getElementById('profileStats').textContent=points+' pontos conquistados e '+completed.length+' atividades concluídas.';
+}
+
+// QUIZ DINÂMICO
+const quiz=[
+ {q:'Para que serve um título em uma história?',a:['Para terminar o texto.','Para apresentar o assunto ou a história.','Para substituir os parágrafos.'],c:1},
+ {q:'Qual é a função da pontuação?',a:['Organizar e dar sentido ao texto.','Deixar todas as palavras iguais.','Apagar as ideias do autor.'],c:0},
+ {q:'O que é um personagem?',a:['O nome do livro.','O lugar da história.','Quem participa da história.'],c:2},
+ {q:'Complete: O passarinho ______ pelo céu.',a:['Bonita','Voou','Escola'],c:1},
+ {q:'Qual é a ordem de uma história?',a:['Início, desenvolvimento e conclusão.','Conclusão, início e desenvolvimento.','Desenvolvimento, conclusão e início.'],c:0},
+ {q:'Qual destas palavras é um adjetivo?',a:['Correr','Caderno','Bonito'],c:2},
+ {q:'Qual palavra é um substantivo?',a:['Casa','Bonito','Rapidamente'],c:0},
+ {q:'Qual sinal usamos no final de uma pergunta?',a:['Ponto final','Interrogação','Vírgula'],c:1},
+ {q:'Qual palavra tem sentido contrário de feliz?',a:['Contente','Alegre','Triste'],c:2},
+ {q:'Qual frase está escrita corretamente?',a:['Eu gosto de ler.','eu Gosto de ler','Eu gosto de ler'],c:0}
+];
+let quizDone=getData('oficina_quiz',[]);
+function renderQuiz(){
+ const container=document.getElementById('quizContainer');
+ container.innerHTML='';
+ quiz.forEach((q,i)=>{
+  const div=document.createElement('div');div.className='question';
+  const h=document.createElement('h3');h.textContent=(i+1)+'. '+q.q;div.appendChild(h);
+  q.a.forEach((answer,j)=>{
+   const b=document.createElement('button');b.className='answer';b.textContent=String.fromCharCode(65+j)+') '+answer;
+   if(quizDone.includes(i)){b.disabled=true;if(j===q.c)b.classList.add('correct')}
+   b.addEventListener('click',()=>answerQuiz(i,j,div));div.appendChild(b);
+  });
+  const feedback=document.createElement('div');feedback.className='feedback';feedback.id='quizFeedback'+i;
+  if(quizDone.includes(i))feedback.textContent='🎉 Questão concluída!';
+  div.appendChild(feedback);container.appendChild(div);
+ });
+ document.getElementById('quizScore').textContent=quizDone.length+' de '+quiz.length+' questões concluídas.';
+}
+function answerQuiz(i,j,div){
+ if(quizDone.includes(i))return;
+ const q=quiz[i],buttons=div.querySelectorAll('.answer');
+ buttons.forEach((b,index)=>{b.disabled=true;if(index===q.c)b.classList.add('correct')});
+ const feedback=div.querySelector('.feedback');
+ if(j===q.c){
+  feedback.textContent='🎉 Muito bem! Você acertou! +10 pontos';
+  finishActivity('quiz-'+i,10);
+ }else{
+  buttons[j].classList.add('wrong');
+  feedback.textContent='💡 Boa tentativa! A alternativa correta está destacada.';
+  finishActivity('quiz-'+i,2);
+ }
+ quizDone.push(i);localStorage.setItem('oficina_quiz',JSON.stringify(quizDone));
+ document.getElementById('quizScore').textContent=quizDone.length+' de '+quiz.length+' questões concluídas.';
+ document.getElementById('activityProgress').style.width=(quizDone.length/quiz.length*100)+'%';
+}
+function readingAnswer(button,correct){
+ const box=button.parentElement;
+ if(box.dataset.done)return;
+ box.dataset.done='yes';
+ box.querySelectorAll('.answer').forEach(b=>b.disabled=true);
+ const feedback=box.querySelector('.feedback');
+ if(correct){button.classList.add('correct');feedback.textContent='🎉 Resposta correta!';earnPoints(10,'Você ganhou 10 pontos!')}
+ else{button.classList.add('wrong');feedback.textContent='💡 Tente novamente nas próximas atividades!';earnPoints(2,'Você ganhou 2 pontos pela tentativa!')}
+}
+
+// MUNDO DAS PALAVRAS
+const words=[
+ {w:'Imaginação',e:'🌟',d:'Capacidade de criar imagens, ideias e situações na mente.',ex:'Use sua imaginação para inventar uma história.',c:'criatividade'},
+ {w:'Persistência',e:'🌱',d:'Continuar tentando mesmo quando algo parece difícil.',ex:'A persistência ajuda a alcançar objetivos.',c:'sentimentos'},
+ {w:'Criatividade',e:'💡',d:'Habilidade de criar ideias e soluções diferentes.',ex:'A criatividade transforma ideias em projetos.',c:'criatividade'},
+ {w:'Solidariedade',e:'🤝',d:'Atitude de ajudar e apoiar outras pessoas.',ex:'A solidariedade fortalece a amizade.',c:'sentimentos'},
+ {w:'Transformação',e:'🦋',d:'Processo de mudança ou desenvolvimento.',ex:'A leitura pode trazer transformação.',c:'criatividade'},
+ {w:'Descoberta',e:'🌻',d:'Ato de encontrar ou conhecer algo novo.',ex:'A descoberta deixou todos felizes.',c:'escola'},
+ {w:'Floresta',e:'🌳',d:'Grande área coberta por árvores e vegetação.',ex:'A floresta abriga muitos animais.',c:'natureza'},
+ {w:'Esperança',e:'💜',d:'Sentimento de confiança em algo bom que pode acontecer.',ex:'A esperança nos ajuda a seguir em frente.',c:'sentimentos'},
+ {w:'Coragem',e:'🦁',d:'Força para enfrentar situações difíceis.',ex:'Ela teve coragem de apresentar o trabalho.',c:'sentimentos'},
+ {w:'Conhecimento',e:'📚',d:'Conjunto de informações e aprendizados.',ex:'O conhecimento cresce com a curiosidade.',c:'escola'},
+ {w:'Curiosidade',e:'🔎',d:'Vontade de descobrir e aprender coisas novas.',ex:'A curiosidade levou o aluno a pesquisar.',c:'escola'},
+ {w:'Natureza',e:'🌿',d:'Conjunto de seres vivos e elementos naturais.',ex:'Devemos cuidar da natureza.',c:'natureza'}
+];
+function setCategory(cat,button){
+ currentCategory=cat;
+ document.querySelectorAll('.category-buttons button').forEach(b=>b.classList.remove('active'));
+ button.classList.add('active');renderWords();
+}
+function renderWords(){
+ const search=document.getElementById('wordSearch').value.toLowerCase();
+ const grid=document.getElementById('wordGrid');grid.innerHTML='';
+ const filtered=words.filter(x=>(currentCategory==='todas'||x.c===currentCategory)&&(x.w.toLowerCase().includes(search)||x.d.toLowerCase().includes(search)));
+ if(!filtered.length){grid.innerHTML='<p>Nenhuma palavra encontrada. Tente outra pesquisa!</p>';return}
+ filtered.forEach(x=>{
+  const card=document.createElement('div');card.className='word-card';
+  const emoji=document.createElement('div');emoji.className='emoji';emoji.textContent=x.e;
+  const title=document.createElement('h3');title.textContent=x.w;
+  const desc=document.createElement('p');desc.textContent=x.d;
+  const example=document.createElement('small');example.textContent='Ex.: '+x.ex;
+  card.append(emoji,title,desc,example);grid.appendChild(card);
+ });
+}
+function surpriseWord(){
+ const item=words[Math.floor(Math.random()*words.length)];
+ document.getElementById('randomWord').textContent=item.w.toUpperCase();
+ document.getElementById('randomMeaning').textContent=item.d;
+}
+
+// JOGO 1: LETRA FALTANDO
+const letterGames=[
+ {word:'CASA',mask:'CA_A',missing:'S',options:['S','M','T']},
+ {word:'BOLA',mask:'BO_A',missing:'L',options:['R','L','D']},
+ {word:'GATO',mask:'GA_O',missing:'T',options:['P','T','C']},
+ {word:'LIVRO',mask:'LI_RO',missing:'V',options:['V','F','B']},
+ {word:'PATO',mask:'PA_O',missing:'T',options:['D','T','M']},
+ {word:'FLOR',mask:'F_OR',missing:'L',options:['L','R','S']}
+];
+let letterIndex=0;
+function newLetterGame(){
+ letterIndex=(letterIndex+1)%letterGames.length;
+ const g=letterGames[letterIndex];
+ document.getElementById('missingWord').textContent=g.mask;
+ const feedback=document.getElementById('letterFeedback');
+ feedback.textContent='';
+ feedback.dataset.done='';
+ const box=document.getElementById('letterOptions');box.innerHTML='';
+ g.options.forEach(option=>{
+  const b=document.createElement('button');b.textContent=option;
+  b.onclick=()=>checkLetter(option,b);box.appendChild(b);
+ });
+}
+function checkLetter(letter,button){
+ const g=letterGames[letterIndex];
+ if(document.getElementById('letterFeedback').dataset.done)return;
+ const feedback=document.getElementById('letterFeedback');
+ if(letter===g.missing){
+  feedback.textContent='🎉 Muito bem! A palavra é '+g.word+'!';
+  button.classList.add('correct');earnPoints(5,'+5 pontos! 🔤');
+ }else{
+  feedback.textContent='💡 Quase! Tente observar as letras.';
+  button.classList.add('wrong');
+  return;
+ }
+ feedback.dataset.done='yes';
+}
+function resetLetterGame(){
+ document.getElementById('letterFeedback').dataset.done='';
+}
+
+// JOGO 2: FORMAR FRASES
+const sentenceBank=[
+ ['A','menina','gosta','de','ler'],
+ ['O','cachorro','corre','no','parque'],
+ ['As','crianças','brincam','na','escola'],
+ ['O','sol','brilha','no','céu']
+];
+let sentenceIndex=0,chosenWords=[];
+function newSentence(){
+ sentenceIndex=(sentenceIndex+1)%sentenceBank.length;chosenWords=[];
+ document.getElementById('sentenceFeedback').textContent='';
+ document.getElementById('sentenceFeedback').dataset.done='';
+ const words=[...sentenceBank[sentenceIndex]].sort(()=>Math.random()-.5);
+ document.getElementById('sentenceWords').textContent='Palavras escolhidas: ';
+ const box=document.getElementById('sentenceOptions');box.innerHTML='';
+ words.forEach(word=>{
+  const b=document.createElement('button');b.textContent=word;
+  b.onclick=()=>{if(chosenWords.length>=words.length)return;chosenWords.push(word);b.disabled=true;document.getElementById('sentenceWords').textContent=chosenWords.join(' ');};
+  box.appendChild(b);
+ });
+}
+function checkSentence(){
+ const correct=sentenceBank[sentenceIndex].join(' ');
+ const chosen=chosenWords.join(' ');
+ const feedback=document.getElementById('sentenceFeedback');
+ if(feedback.dataset.done)return;
+ if(chosen===correct){
+  feedback.textContent='🎉 Frase perfeita! Muito bem!';
+  feedback.dataset.done='yes';earnPoints(10,'+10 pontos! 🧩');
+ }else{
+  feedback.textContent='💡 Ainda não está na ordem correta. Tente novamente!';
+ }
+}
+
+// JOGO 3: SINÔNIMOS
+const synonyms=[
+ {word:'ALEGRE',correct:'Feliz',options:['Triste','Feliz','Bravo']},
+ {word:'BONITO',correct:'Belo',options:['Feio','Belo','Alto']},
+ {word:'RÁPIDO',correct:'Veloz',options:['Devagar','Veloz','Pequeno']},
+ {word:'CALMO',correct:'Tranquilo',options:['Agitado','Barulhento','Tranquilo']},
+ {word:'INTELIGENTE',correct:'Esperto',options:['Esperto','Lento','Fraco']}
+];
+let synonymIndex=0;
+function newSynonym(){
+ synonymIndex=(synonymIndex+1)%synonyms.length;
+ const item=synonyms[synonymIndex];
+ document.getElementById('synonymWord').textContent=item.word;
+ document.getElementById('synonymFeedback').textContent='';
+ document.getElementById('synonymFeedback').dataset.done='';
+ const box=document.getElementById('synonymOptions');box.innerHTML='';
+ item.options.forEach(option=>{
+  const b=document.createElement('button');b.textContent=option;
+  b.onclick=()=>{
+   const feedback=document.getElementById('synonymFeedback');
+   if(feedback.dataset.done)return;
+   if(option===item.correct){feedback.textContent='🎉 Acertou!';feedback.dataset.done='yes';b.classList.add('correct');earnPoints(5,'+5 pontos!')}
+   else{feedback.textContent='💡 Tente outra alternativa.';b.classList.add('wrong')}
+  };
+  box.appendChild(b);
+ });
+}
+
+// DESAFIOS
+function startChallenge(prompt){
+ showPage('redacao');
+ essayTitle.value='Desafio de criatividade';
+ essay.value=prompt+'\n\n';
+ essay.focus();
+ essay.setSelectionRange(essay.value.length,essay.value.length);
+ localStorage.setItem('oficina_titulo',essayTitle.value);
+ localStorage.setItem('oficina_redacao',essay.value);
+ countWords();toast('Seu desafio está pronto! Comece a escrever. ✍️');
+}
+
+// INICIALIZAÇÃO
+updateProfile();
+countWords();
+renderQuiz();
+renderWords();
+surpriseWord();
+newLetterGame();
+newSentence();
+newSynonym();
+updateProgress();
+</script>
+</body>
+</html>
+
